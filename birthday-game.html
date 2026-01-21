@@ -3,22 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Birthday Game</title>
+  <title>Snake Game - Mobile Friendly</title>
   <style>
     body {
-      margin: 0;
-      height: 100vh;
-      background-color: black;
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      background-color: #222;
+      margin: 0;
+      font-family: Arial, sans-serif;
       color: white;
-      font-size: 2rem;
-      font-family: 'Dancing Script', cursive;
+    }
+    canvas {
+      background-color: #333;
+      border: 2px solid #d81b60;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #ff4081;
+      margin-bottom: 10px;
+    }
+    #giftBtn {
+      display: none;
+      margin-bottom: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #00e676;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #222;
+    }
+    #giftBtn:hover {
+      background-color: #00c853;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-template-rows: repeat(2, 60px);
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .control-btn {
+      background-color: #ff4081;
+      border: none;
+      border-radius: 10px;
+      font-size: 20px;
+      color: white;
+      cursor: pointer;
+    }
+    .control-btn:active {
+      background-color: #d81b60;
+    }
+    .empty {
+      background: none;
+      cursor: default;
     }
   </style>
 </head>
 <body>
-  Birthday Game Page (Black for now)
+  <h1>Snake Game Score 08 to win and receive gift</h1>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <button id="giftBtn" onclick="openGift()">🎁 Open Gift 🎁</button>
+
+  <!-- Mobile Controls -->
+  <div class="controls">
+    <div class="empty"></div>
+    <button class="control-btn" onclick="changeDirection('UP')">⬆️</button>
+    <div class="empty"></div>
+    <button class="control-btn" onclick="changeDirection('LEFT')">⬅️</button>
+    <div class="empty"></div>
+    <button class="control-btn" onclick="changeDirection('RIGHT')">➡️</button>
+    <div class="empty"></div>
+    <button class="control-btn" onclick="changeDirection('DOWN')">⬇️</button>
+    <div class="empty"></div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    const giftBtn = document.getElementById("giftBtn");
+
+    const box = 20;
+    const canvasSize = 400;
+
+    let snake = [{x: 9 * box, y: 9 * box}];
+    let direction = "RIGHT";
+    let food = {
+      x: Math.floor(Math.random() * (canvasSize/box)) * box,
+      y: Math.floor(Math.random() * (canvasSize/box)) * box
+    };
+    let score = 0;
+    const winScore = 8;
+
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+      if(e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+      if(e.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+      if(e.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+    });
+
+    function changeDirection(newDir){
+      // Prevent snake from reversing
+      if(newDir === "UP" && direction !== "DOWN") direction = "UP";
+      if(newDir === "DOWN" && direction !== "UP") direction = "DOWN";
+      if(newDir === "LEFT" && direction !== "RIGHT") direction = "LEFT";
+      if(newDir === "RIGHT" && direction !== "LEFT") direction = "RIGHT";
+    }
+
+    function draw(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw snake
+      for(let i=0; i<snake.length; i++){
+        ctx.fillStyle = i === 0 ? "#ff4081" : "#d81b60";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+        ctx.strokeStyle = "#222";
+        ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+      }
+
+      // Draw food
+      ctx.fillStyle = "#00ff00";
+      ctx.fillRect(food.x, food.y, box, box);
+
+      // Move snake
+      let snakeX = snake[0].x;
+      let snakeY = snake[0].y;
+
+      if(direction === "LEFT") snakeX -= box;
+      if(direction === "RIGHT") snakeX += box;
+      if(direction === "UP") snakeY -= box;
+      if(direction === "DOWN") snakeY += box;
+
+      // Eat food
+      if(snakeX === food.x && snakeY === food.y){
+        score++;
+        food = {
+          x: Math.floor(Math.random() * (canvasSize/box)) * box,
+          y: Math.floor(Math.random() * (canvasSize/box)) * box
+        };
+      } else {
+        snake.pop();
+      }
+
+      // Add new head
+      const newHead = {x: snakeX, y: snakeY};
+
+      // Win condition
+      if(score >= winScore){
+        clearInterval(game);
+        giftBtn.style.display = "block";
+        alert("🎉 You Win! Click the gift below to open 🎁");
+        return;
+      }
+
+      // Game over
+      if(snakeX < 0 || snakeY < 0 || snakeX >= canvasSize || snakeY >= canvasSize || collision(newHead, snake)){
+        clearInterval(game);
+        alert("Game Over! Your score: " + score);
+        window.location.reload();
+      }
+
+      snake.unshift(newHead);
+    }
+
+    function collision(head, array){
+      for(let i=0; i<array.length; i++){
+        if(head.x === array[i].x && head.y === array[i].y){
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function openGift() {
+      window.open("vdo.html", "_blank");
+    }
+
+    const game = setInterval(draw, 150);
+  </script>
 </body>
 </html>
