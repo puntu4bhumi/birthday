@@ -1,24 +1,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gift</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background-color: black;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-size: 2rem;
-      font-family: 'Dancing Script', cursive;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Gifts 💝</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Dancing Script', cursive;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: white;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 150px); /* horizontal */
+  gap: 25px;
+}
+
+.envelope {
+  background: rgba(255,255,255,0.25);
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 0 25px rgba(255,77,109,0.6);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.envelope:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 35px rgba(255,77,109,1);
+}
+
+.envelope img {
+  width: 90px;
+}
+
+.envelope p {
+  margin-top: 10px;
+  font-size: 1.2rem;
+}
+
+/* Popup */
+.popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.popup-content {
+  background: white;
+  color: #ff4d6d;
+  padding: 25px;
+  border-radius: 20px;
+  max-width: 90%;
+  text-align: center;
+}
+
+.popup-content img {
+  max-width: 67%;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+button {
+  margin-top: 15px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 20px;
+  background: #ff4d6d;
+  color: white;
+  cursor: pointer;
+}
+</style>
 </head>
+
 <body>
-  Hehehehe meee is yourrr giftttt😘🥰
+
+<!-- MUSIC -->
+<audio id="giftMusic">
+  <source src="fav.webm" type="audio/mpeg">
+</audio>
+
+<div class="container">
+  <div class="envelope" onclick="playMusic()">
+    <img src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png">
+    <p>Play Music</p>
+  </div>
+
+  <div class="envelope" onclick="openImage()">
+    <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png">
+    <p>Open Image</p>
+  </div>
+
+  <div class="envelope" onclick="openText()">
+    <img src="https://cdn-icons-png.flaticon.com/512/2462/2462719.png">
+    <p>Read Message</p>
+  </div>
+</div>
+
+<script>
+const music = document.getElementById("giftMusic");
+
+function playMusic() {
+  music.volume = 0.4;
+  music.play();
+  alert("Music is playing 🎶");
+}
+
+function openImage() {
+  showPopup(`
+    <img src="love.png">
+  `);
+}
+
+function openText() {
+  showPopup(`
+    <h2> For You ❤️</h2>
+    <p>
+      Hello Pyariii !!! Muahhhhh happy happy birthdayy myyyy loveeee... <br>
+      Sadhaiiiii khushiii hunuu jhagdaa nagarnuuu ma sngaaaa <br>
+      i loveee youu dherai dheraii..<br>
+      partikk so much blesses and loveess youuuu.<br>
+      Sadhaii mai sanga hunuuuuuu 
+    </p>
+  `);
+}
+
+function showPopup(content) {
+  const popup = document.createElement("div");
+  popup.className = "popup";
+  popup.innerHTML = `
+    <div class="popup-content">
+      ${content}
+      <button onclick="this.closest('.popup').remove()">Close</button>
+    </div>
+  `;
+  document.body.appendChild(popup);
+}
+</script>
+
 </body>
 </html>
