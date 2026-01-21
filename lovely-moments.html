@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lovely Moments</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: radial-gradient(circle at top, #ff5f8a, #1a0010);
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* floating hearts background */
+    .bg-hearts span {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.15);
+      font-size: 20px;
+      animation: float 12s linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+      50% { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    }
+
+    svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .point {
+      position: absolute;
+      z-index: 2;
+      cursor: pointer;
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
+
+    .heart {
+      font-size: 28px;
+      color: #ff2f6e;
+      filter: drop-shadow(0 0 8px #ff7aa8);
+    }
+
+    .date {
+      font-size: 12px;
+      color: white;
+      margin-top: 4px;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    /* popup */
+    .popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+    }
+
+    .popup-content {
+      background: #fff0f5;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      width: 320px;
+      animation: zoom 0.4s ease;
+    }
+
+    .popup-content img {
+      width: 100%;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    @keyframes zoom {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .close {
+      margin-top: 10px;
+      cursor: pointer;
+      color: #ff2f6e;
+      font-weight: bold;
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+    }
+
+    .nav-buttons button {
+      background: #ff2f6e;
+      border: none;
+      color: white;
+      padding: 5px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .nav-buttons button:hover {
+      background: #ff5f8a;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- DO NOT CHANGE: YOUR MUSIC -->
+  <audio id="bgMusic" autoplay loop>
+    <source src="kiss-in-the-rain.mp3.webm" type="audio/mpeg">
+  </audio>
+
+  <!-- background hearts -->
+  <div class="bg-hearts">
+    <span style="left:10%; animation-delay:0s">❤</span>
+    <span style="left:30%; animation-delay:3s">❤</span>
+    <span style="left:50%; animation-delay:6s">❤</span>
+    <span style="left:70%; animation-delay:2s">❤</span>
+    <span style="left:90%; animation-delay:5s">❤</span>
+  </div>
+
+  <!-- connection lines -->
+  <svg>
+    <polyline points="15%,20% 35%,40% 55%,25% 75%,45% 60%,65% 40%,70% 20%,55% 10%,75%"
+      fill="none"
+      stroke="rgba(255,255,255,0.4)"
+      stroke-width="2"
+      stroke-dasharray="6 4" />
+  </svg>
+
+  <!-- heart points -->
+  <div class="point" style="left:15%; top:20%;" onclick="openPopup(1)">
+    <div class="heart">❤</div><div class="date">04-10-2024</div>
+  </div>
+  <div class="point" style="left:35%; top:40%;" onclick="openPopup(2)">
+    <div class="heart">❤</div><div class="date">10-10-2024</div>
+  </div>
+  <div class="point" style="left:55%; top:25%;" onclick="openPopup(3)">
+    <div class="heart">❤</div><div class="date">21-12-2024</div>
+  </div>
+  <div class="point" style="left:75%; top:45%;" onclick="openPopup(4)">
+    <div class="heart">❤</div><div class="date">25-01-2025</div>
+  </div>
+  <div class="point" style="left:60%; top:65%;" onclick="openPopup(5)">
+    <div class="heart">❤</div><div class="date">03-02-2025</div>
+  </div>
+  <div class="point" style="left:40%; top:70%;" onclick="openPopup(6)">
+    <div class="heart">❤</div><div class="date">14-02-2025</div>
+  </div>
+  <div class="point" style="left:20%; top:55%;" onclick="openPopup(7)">
+    <div class="heart">❤</div><div class="date">01-03-2025</div>
+  </div>
+  <div class="point" style="left:10%; top:75%;" onclick="openPopup(8)">
+    <div class="heart">❤</div><div class="date">Today</div>
+  </div>
+
+  <!-- popup -->
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <img id="popupImg" src="placeholder1.jpg" alt="Moment Photo">
+      <p id="popupText">Write your lovely description here 💕</p>
+      <div class="nav-buttons">
+        <button onclick="prevImage()">◀ Prev</button>
+        <button onclick="nextImage()">Next ▶</button>
+      </div>
+      <div class="close" onclick="closePopup()">Close</div>
+    </div>
+  </div>
+
+  <script>
+    // store multiple photos and unique text for each
+    const moments = {
+      1: {
+        images: ["12.jpeg", "11.jpeg", "13.jpeg"],
+        texts: ["Crying Pyari💕", "Ankha suniyekooo🌸", "Exam after 3-4 hours call"]
+      },
+      2: {
+        images: ["21.jpg", "22.jpeg", "23.png"],
+        texts: ["Maduu going pyariiiii", "I love you.....she replied I know...", "Tiktokey yediii from chainpur❤️"]
+      },
+      3: {
+        images: ["31.png", "32.jpeg", "33.jpeg"],
+        texts: ["First Date with pyariii", "Yedi getting ready ", "yedii with my earphone"]
+      },
+      4: {
+        images: ["41.jpg", "42.png", "43.jpg"],
+        texts: ["Dating phaseeee😭😭😭", "first photo of her i put in the story😘", "Pyariii looking cutie 😍😍"]
+      },
+      5: {
+        images: ["51.jpg", "52.jpg"],
+        texts: ["Second date with pyariiii", "happy sarswati pujaaa ✨"]
+      },
+      6: {
+        images: ["61.jpg", "62.jpeg", "63.jpg"],
+        texts: ["Memorable date😭😭", "Yedii risaingggg😤", "i missss youuuuuuu muahh😭😭"]
+      },
+      7: {
+        images: ["71.jpg", "72.jpg"],
+        texts: ["Exam ko tayariii hehehe❤️", "Evining walk with pyariiii"]
+      },
+      8: {
+        images: ["81.png"],
+        texts: ["Happiest happiest Birthdayyy Meriiii pyariiiii ✨"]
+      }
+    };
+
+    let currentMoment = 1;
+    let currentImageIndex = 0;
+
+    function openPopup(id) {
+      currentMoment = id;
+      currentImageIndex = 0;
+      document.getElementById("popup").style.display = "flex";
+      updatePopupContent();
+    }
+
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+
+    function updatePopupContent() {
+      const moment = moments[currentMoment];
+      document.getElementById("popupImg").src = moment.images[currentImageIndex];
+      document.getElementById("popupText").innerText = moment.texts[currentImageIndex];
+    }
+
+    function nextImage() {
+      const moment = moments[currentMoment];
+      currentImageIndex = (currentImageIndex + 1) % moment.images.length;
+      updatePopupContent();
+    }
+
+    function prevImage() {
+      const moment = moments[currentMoment];
+      currentImageIndex = (currentImageIndex - 1 + moment.images.length) % moment.images.length;
+      updatePopupContent();
+    }
+  </script>
+
+</body>
+</html>
